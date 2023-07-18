@@ -210,20 +210,18 @@ Controller relacionados a criação de conta de email, envio e recebimento de em
 ## Rotas
 ### Usuários
 - Com exceção da rota de criação de usuário, todas as rotas são protegidas por autenticação;
-> 
-routes.post('/users'); //CreateUser
-routes.use(auth);
-routes.get('/users'); //GetUser
-routes.get('/users/:id'); //GetUserById
-routes.put('/users/:id'); //UpdateUserById
-routes.delete('/users/:id'); //DeleteUserById
+> routes.post('/users'); //CreateUser
+> routes.use(auth);
+> routes.get('/users'); //GetUser
+> routes.get('/users/:id'); //GetUserById
+> routes.put('/users/:id'); //UpdateUserById
+> routes.delete('/users/:id'); //DeleteUserById
 
 ### Email
 - As rotas de email são protegidas por autenticação
- >
-routes.use(auth);
-routes.post('/users/:user_id/createAccount'); //CreateAccount
-routes.post('/users/:user_id/sendMail'); //SendMail
-routes.get('/users/:user_id/getMail'); //GetMail
+>routes.use(auth);
+>routes.post('/users/:user_id/createAccount'); //CreateAccount
+>routes.post('/users/:user_id/sendMail'); //SendMail
+>routes.get('/users/:user_id/getMail'); //GetMail
 
 
