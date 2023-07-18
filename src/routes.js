@@ -1,17 +1,20 @@
 import { Router } from "express";
 import UserController from "./controllers/UserController";
 import MailAccountController from "./controllers/MailAccountController";
-import HelloWorldController from './controllers/HelloWorldController'
-
+import SessionController from "./controllers/SessionController";
+import auth from "./middleware/auth";
 const routes = new Router();
 
-routes.get('/hello-world', HelloWorldController.index)
-
+routes.post('/sessions', SessionController.create);
+routes.post('/users', UserController.create);
+routes.use(auth);
 routes.get('/users', UserController.index);
 routes.get('/users/:id', UserController.show);
-routes.post('/users', UserController.create);
 routes.put('/users/:id', UserController.update);
 routes.delete('/users/:id', UserController.destroy);
+
+
+
 
 routes.post('/users/:user_id/createAccount', MailAccountController.create);
 routes.post('/users/:user_id/sendMail', MailAccountController.sendMail);

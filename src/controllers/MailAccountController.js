@@ -62,11 +62,7 @@ class MailAccountController {
         const pass = account.password;
         const host = account.host_smtp;
         const port = account.port_smtp; 
-        const secure = true;
 
-        if(port =!465 ) {
-            secure = false
-        }
 
         const transporter = nodemailer.createTransport({
             host: host,
@@ -75,7 +71,7 @@ class MailAccountController {
                 user,
                 pass
             },
-            secure
+            secure: true
         });
 
         await transporter.sendMail({

@@ -46,6 +46,10 @@ Neste modelo encontramos os seguintes objetos:
 + message
 + replyTo
 
+## Middleware
+### auth.js
+- A função do middleware é fazer a autenticação do token, gerado na session;
+
 ## Controllers
 **Até o momento, temos os seguintes controllers:**
 + UserController
@@ -60,6 +64,166 @@ Neste modelo encontramos os seguintes objetos:
 Controller relacionados a criação de conta de email, envio e recebimento de email.
 
 - **Método de envio de email**
-⚠️
+> 
+    async sendMail(req, res) {
+    try{
+        const {user_id} = req.params;
+        const {to, message, subject, replyTo} = req.body;
+        const findUser = await User.findById(user_id);
+        if(!findUser) {
+            return res.status(404).json({message: "usuario não encontrado"});
+        };
+
+        const account = await MailAccount.findOne({
+            userId: user_id,
+        });
+       
+        if(!account) {
+            return res.status(404).json({message: "usuario não encontrado"});
+        }
+
+        const user = account.email;
+        const pass = account.password;
+        const host = account.host_smtp;
+        const port = account.port_smtp; 
+        const secure = true;
+
+        if(port =!465 ) {
+            secure = false
+        }
+
+        const transporter = nodemailer.createTransport({
+            host: host,
+            port: port,
+            auth: {
+                user,
+                pass
+            },
+            secure
+        });
+
+        await transporter.sendMail({
+            to: to,
+            from: user,
+            subject: subject,
+            text: message,
+            replyTo: user
+        })
+
+        const mailLogger = await MailLogger.create({
+            to, 
+            from: user, 
+            message, 
+            subject, 
+            replyTo: user
+        })
+
+        return res.status(200).json({
+            message: 'Email enviado com sucesso',
+            mailLogger
+        })
+        
+    }
+    catch(error){
+        console.error(error);
+        return res.status(500).json({message: "Erro interno de servidor",
+    error});
+        }
+    }
+    >
 - **Método de recebimento de email**
-⚠️
+>
+    async getMail(req, res) {
+        try{
+            const {user_id} = req.params;
+            const findUser = await User.findById(user_id);
+            if(!findUser) {
+                res.status(404).json({message: "usuario não encontrado"});
+            }
+            const account = await MailAccount.findOne({
+                userId: user_id
+            });
+            const email = account.email;
+            const pass = account.password;
+            const host = account.host_imap
+            const port = account.port_imap;
+
+            const client = new imap.Client();
+            client.connect({
+                host,
+                port,
+                auth:{
+                    email,
+                    pass,
+                    isSecure: true
+                }
+            })
+
+            client.login();
+            const beforeDate = new Date();
+            beforeDate.setDate(beforeDate.getDate()- 1);
+            const searchQuery = {
+                before: beforeDatwe.toISOString().slice(0, 10),
+                timeout: 10000
+            };
+            const mails = await client(searchQuery);
+
+            return res.status(200).json(mails);
+
+
+        } catch(error) {
+
+        }
+    } 
+
+
+### SessionController
+- Controller criado para fazer a autenticação de usuário
+
+> 
+    async create(req, res) {
+        const { user, password} = req.body;
+        const findUser = await User.findOne({ user });
+
+        if(!findUser) {
+            return res.status(401).json({error: "User / password inválido!"});
+        };
+
+        if(!checkPassword(findUser, password)) {
+            return res.status(401).json({error: "User / password inválido!"});
+        };
+
+        const {id} = findUser;
+
+        return res.json({
+            user: {
+                id, 
+                user
+            },
+            token: jwt.sign({id}, authConfig.secret, {
+                expiresIn: authConfig.expiresIn
+            })
+        });
+    }
+}
+
+## Rotas
+### Usuários
+- Com exceção da rota de criação de usuário, todas as rotas são protegidas por autenticação;
+> 
+routes.post('/users'); //CreateUser
+routes.use(auth);
+routes.get('/users'); //GetUser
+routes.get('/users/:id'); //GetUserById
+routes.put('/users/:id'); //UpdateUserById
+routes.delete('/users/:id'); //DeleteUserById
+
+### Email
+- As rotas de email são protegidas por autenticação
+ >
+routes.use(auth);
+routes.post('/users/:user_id/createAccount'); //CreateAccount
+routes.post('/users/:user_id/sendMail'); //SendMail
+routes.get('/users/:user_id/getMail'); //GetMail
+
+
