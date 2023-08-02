@@ -70,74 +70,67 @@ Neste modelo encontramos os seguintes objetos:
 
 Controller relacionados a criação de conta de email, envio e recebimento de email.
 
-- **Método de envio de email**
+- **Trasnporter em caso de isOauth ser true**
 > 
-    async sendMail(req, res) {
-    try{
-        const {user_id} = req.params;
-        const {to, message, subject, replyTo} = req.body;
-        const findUser = await User.findById(user_id);
-        if(!findUser) {
-            return res.status(404).json({message: "usuario não encontrado"});
-        };
-
-        const account = await MailAccount.findOne({
-            userId: user_id,
-        });
-       
-        if(!account) {
-            return res.status(404).json({message: "usuario não encontrado"});
-        }
-
-        const user = account.email;
-        const pass = account.password;
-        const host = account.host_smtp;
-        const port = account.port_smtp; 
-        const secure = true;
-
-        if(port =!465 ) {
-            secure = false
-        }
-
-        const transporter = nodemailer.createTransport({
+            if(isOauth) {      
+            const transporter = nodemailer.createTransport({
             host: host,
             port: port,
             auth: {
-                user,
-                pass
+                type: 'OAuth2',
+                clientId: clientId,
+                clientSecret: clientSecret,
+                tenantId: clientTenant,
+                accessUrl: accessToken
             },
-            secure
+            secure: {
+                protocol: 'TLSv1.2',
+            },
         });
-
         await transporter.sendMail({
             to: to,
             from: user,
             subject: subject,
             text: message,
             replyTo: user
-        })
+        });
+        }
+>
 
-        const mailLogger = await MailLogger.create({
+- *** Transporter em caso de isOauth ser nulo, ou falso ***
+>
+            else {
+            const transporter = nodemailer.createTransport({
+                host: host,
+                port: port,
+                auth:{
+                    user,
+                    pass
+                }, 
+                secure: true
+            });
+            
+            await transporter.sendMail({
+                to: to,
+                from: user,
+                subject: subject,
+                text: message,
+                replyTo: user
+            });
+        }
+>
+
+- *** Inserção de log no banco ***
+>
+    const mailLogger = await MailLogger.create({
             to, 
             from: user, 
             message, 
             subject, 
             replyTo: user
-        })
-
-        return res.status(200).json({
-            message: 'Email enviado com sucesso',
-            mailLogger
-        })
-        
-    }
-    catch(error){
-        console.error(error);
-        return res.status(500).json({message: "Erro interno de servidor",
-    error});
-        }
-    }
+    })
 >
+
 - **Método de recebimento de email**
 >
     async getMail(req, res) {
