@@ -33,6 +33,13 @@ Neste modelo nós temos os seguintes objetos:
 + port_smtp
 + host_imap
 + port_imap
++ isOauth
++ clientId
++ clientSecret
++ clientTenant
++ refreshToken
++ accessToken
++ accessUrl
 
 Mais na frente, na parte de controllers serão explicados como cada objeto se relaciona com as chamadas da API;
 
@@ -130,7 +137,7 @@ Controller relacionados a criação de conta de email, envio e recebimento de em
     error});
         }
     }
-    >
+>
 - **Método de recebimento de email**
 >
     async getMail(req, res) {
@@ -175,7 +182,7 @@ Controller relacionados a criação de conta de email, envio e recebimento de em
 
         }
     } 
-
+>
 
 ### SessionController
 - Controller criado para fazer a autenticação de usuário
@@ -205,8 +212,7 @@ Controller relacionados a criação de conta de email, envio e recebimento de em
             })
         });
     }
-}
-
+>
 ## Rotas
 ### Usuários
 - Com exceção da rota de criação de usuário, todas as rotas são protegidas por autenticação;

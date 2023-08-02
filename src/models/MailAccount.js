@@ -23,6 +23,27 @@ const mailAccountSchema = new mongoose.Schema(
         userId:{
             type: String,
             required: true
+        },
+        isOauth:{
+            type: Boolean
+        },
+        clientId:{
+            type: String
+        },
+        clientSecret:{
+            type: String
+        },
+        clientTenant:{
+            type: String
+        },
+        refreshToken:{
+            type: String
+        },
+        accessToken: {
+            type: String
+        },
+        accessUrl: {
+            type: String
         }
     }
 )

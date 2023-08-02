@@ -8,7 +8,7 @@ class MailAccountController {
     async create(req, res) {
     try{
         const {user_id} = req.params;
-        const { email, password, host_smtp, port_smtp, host_imap, port_imap } = req.body;
+        const { email, password, host_smtp, port_smtp, host_imap, port_imap, isOauth, clientId, clientSecret, clientTenant, refreshToken, accessToken, accessUrl } = req.body;
         const user = await User.findById(user_id);
         if(!user) {
             return res.status(404).json({message: "usuario não encontrado"});
@@ -27,6 +27,13 @@ class MailAccountController {
             port_smtp,
             host_imap,
             port_imap,
+            isOauth,
+            clientId,
+            clientSecret,
+            clientTenant,
+            refreshToken,
+            accessToken,
+            accessUrl,
             userId: user_id 
         })
 
@@ -40,7 +47,24 @@ class MailAccountController {
         return res.status(500).json({error: "Erro interno de servidor"});
     }
     }
+    async show(req, res) {
+        try {
+            const {user_id} = req.params;
+            const user = await User.findById(user_id);
+            if(!user){
+                res.status(404).json({message: 'usuário não encontrado'})
+            }
+            const account = await MailAccount.find({
+                userId: user_id,
+            })
+            res.status(200).json(account)
 
+        } catch(error) {
+            console.error(error);
+            return res.status(500).json({message: "Erro interno de servidor",
+        error});
+        }
+    }
     async sendMail(req, res) {
     try{
         const {user_id} = req.params;
@@ -62,25 +86,54 @@ class MailAccountController {
         const pass = account.password;
         const host = account.host_smtp;
         const port = account.port_smtp; 
-
-
-        const transporter = nodemailer.createTransport({
+        let isOauth = account.isOauth;
+        const clientId = account.clientId;
+        const clientSecret = account.clientSecret;
+        const clientTenant = account.clientTenant;
+        const accessToken = account.accessToken;
+        if(isOauth) {      
+            const transporter = nodemailer.createTransport({
             host: host,
             port: port,
             auth: {
-                user,
-                pass
+                type: 'OAuth2',
+                clientId: clientId,
+                clientSecret: clientSecret,
+                tenantId: clientTenant,
+                accessUrl: accessToken
             },
-            secure: true
+            secure: {
+                protocol: 'TLSv1.2',
+            },
         });
-
         await transporter.sendMail({
             to: to,
             from: user,
             subject: subject,
             text: message,
             replyTo: user
-        })
+        });
+        }
+
+        else {
+            const transporter = nodemailer.createTransport({
+                host: host,
+                port: port,
+                auth:{
+                    user,
+                    pass
+                }, 
+                secure: true
+            });
+            
+            await transporter.sendMail({
+                to: to,
+                from: user,
+                subject: subject,
+                text: message,
+                replyTo: user
+            });
+        }
 
         const mailLogger = await MailLogger.create({
             to, 
