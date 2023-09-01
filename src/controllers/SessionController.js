@@ -6,10 +6,10 @@ import authConfig from '../config/auth'
 class SessionController {
     async create(req, res) {
         const { user, password} = req.body;
-        const findUser = await User.findOne({ user });
+        const findUser = await User.findOne({ 'username' : user });
 
         if(!findUser) {
-            return res.status(401).json({error: "User / password inválido!"});
+            return res.status(401).json({error: "User / password inválido"});
         };
 
         if(!checkPassword(findUser, password)) {

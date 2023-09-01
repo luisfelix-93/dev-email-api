@@ -3,6 +3,7 @@ import MailAccount from "../models/MailAccount";
 import nodemailer from 'nodemailer';
 import MailLogger from "../models/MailLogger";
 import imap from 'imap';
+import MailException from "../models/MailException";
 
 class MailAccountController {
     async create(req, res) {
@@ -151,8 +152,11 @@ class MailAccountController {
     }
     catch(error){
         console.error(error);
-        return res.status(500).json({message: "Erro interno de servidor",
-    error});
+        const newException = await MailException.create({
+            message: `${error}`,
+            statusCode: 500
+        })
+        return res.status(500).json({message: "Erro interno de servidor", newException});
         }
     }
     async getMail(req, res) {

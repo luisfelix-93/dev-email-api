@@ -29,9 +29,9 @@ class UserController {
 
     async create(req, res) {
        try {
-        const { user, password } = req.body;
+        const { username, password } = req.body;
 
-        const findUser = await User.findOne({user});
+        const findUser = await User.findOne({username});
         
         if(findUser){
             return res.status(422).json({ message: `Usuário já existe no sistema`})
@@ -40,7 +40,7 @@ class UserController {
 
         const newUser = await User.create( 
           { 
-               user,
+               username,
                password: encryptadePassword
           });
         return res.status(201).json(newUser);

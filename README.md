@@ -3,7 +3,7 @@
 - **Desenvolvido por: Luis Felipe F. Filho 💻 🤓**
 > Status: Developing ⚠️
 
-**Esta API está sendo desenvolvida para ser um broker de email, no momento utilizando IMAP e SMTP, para o envio de emails e para leitura de caixas de email**
+**Esta API está sendo desenvolvida para ser um broker de email, no momento utilizando IMAP e SMTP, para o envio de emails e para leitura de caixas de email. Método de autenticação OAuth está sendo implementado, porém, não houve resultado ainda**
 
 ## Models
 
@@ -52,6 +52,15 @@ Neste modelo encontramos os seguintes objetos:
 + to
 + message
 + replyTo
+
+### MailExcpetion
+
+Modelo para receber as exceptions relacionadas ao envio e recebimento de email no banco de dados em cada requisição
+Neste modelo, temos os seguintes objetos: 
++ message
++ statusCode
+
+O objetivo deste método é coletar os erros ao fazer a requisição, para que seja melhor tratado no ambiente de produção.
 
 ## Middleware
 ### auth.js
