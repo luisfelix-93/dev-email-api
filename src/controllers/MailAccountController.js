@@ -62,11 +62,18 @@ class MailAccountController {
 
         } catch(error) {
             console.error(error);
+            const newException = await MailException.create(
+                {
+                    methode: 'createEmail',
+                    message: `${error}`,
+                    statusCode: 500
+                }
+            )
             return res.status(500).json({message: "Erro interno de servidor",
         error});
         }
     }
-    async sendMail(req, res) {
+    async sendEmail(req, res) {
     try{
         const {user_id} = req.params;
         const {to, message, subject, replyTo} = req.body;
@@ -153,6 +160,8 @@ class MailAccountController {
     catch(error){
         console.error(error);
         const newException = await MailException.create({
+            methode: 'sendEmail',
+            methode: 'send',
             message: `${error}`,
             statusCode: 500
         })
@@ -198,6 +207,16 @@ class MailAccountController {
 
 
         } catch(error) {
+            console.log(error);
+            const newException = await MailException.create(
+                {
+                    methode: 'getMail',
+                    message: `${error}`,
+                    statusCode: 500
+                }
+            )
+
+            return res.status(500).json({message: "Erro interno de servidor", newException});
 
         }
     } 
