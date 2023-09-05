@@ -1,7 +1,7 @@
 # DEV-EMAIL-API
-
+> v1.1.092023.1
 - **Desenvolvido por: Luis Felipe F. Filho 💻 🤓**
-> Status: Developing ⚠️
+> Status: Developing ⚠️ 
 
 **Esta API está sendo desenvolvida para ser um broker de email, no momento utilizando IMAP e SMTP, para o envio de emails e para leitura de caixas de email. Método de autenticação OAuth está sendo implementado, porém, não houve resultado ainda**
 
@@ -232,4 +232,7 @@ Controller relacionados a criação de conta de email, envio e recebimento de em
 >routes.post('/users/:user_id/sendMail'); //SendMail
 >routes.get('/users/:user_id/getMail'); //GetMail
 
+
+## Collection
+- Verificar a collection criada para o Postman (dev-email-api.postman_collection.json)
 

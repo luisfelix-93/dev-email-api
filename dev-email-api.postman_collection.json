@@ -1,0 +1,251 @@
+{
+	"info": {
+		"_postman_id": "5530a8e7-6e7f-46a0-8700-c374cdd99a7d",
+		"name": "dev-email-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "CreateSession",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":\"user\",\r\n    \"password\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5001/sessions",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"sessions"
+							]
+						},
+						"description": "Endpoint que faz a autenticação do usuário"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuários",
+			"item": [
+				{
+					"name": "Email",
+					"item": [
+						{
+							"name": "CreateAccount",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"email@email.com\",\r\n    \"password\": \"password\",\r\n    \"host_smtp\": \"hos.smtp.com\",\r\n    \"port_smtp\": 465,\r\n    \"host_imap\": \"imap.email.com\",\r\n    \"port_imap\": 993,\r\n    \"isOauth\": false,\r\n    \"clientId\": \"client_id\",\r\n    \"clientTenant\": \"client_tenant\",\r\n    \"clientSecret\":\"client_secret\",\r\n    \"accessToken\": \"client_access_token\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5001/users/:id_user/createAccount",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"users",
+										":id_user",
+										"createAccount"
+									],
+									"variable": [
+										{
+											"key": "id_user",
+											"value": ""
+										}
+									]
+								},
+								"description": "Endpoint para registro de dados de email. Esse endpoint é protegido via autenticação JWT. Verificar rota /sessions"
+							},
+							"response": []
+						},
+						{
+							"name": "SendEmail",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"to\": \"email@email.com\",\r\n    \"subject\": \"subject\",\r\n    \"message\": \"<h1>Ipsis litteris</p>\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5001/users/:id_user/sendMail",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"users",
+										":id_user",
+										"sendMail"
+									],
+									"variable": [
+										{
+											"key": "id_user",
+											"value": ""
+										}
+									]
+								},
+								"description": "Endpoint para o envio de email. Esse endpoint é protegido via autenticação JWT. Verificar rota /sessions"
+							},
+							"response": []
+						},
+						{
+							"name": "GetMail",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5001/users/:id_user/getMail",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"users",
+										":id_user",
+										"getMail"
+									],
+									"variable": [
+										{
+											"key": "id_user",
+											"value": ""
+										}
+									]
+								},
+								"description": "Endpoint para recebimento de emails. Esse endpoint é protegido via autenticação JWT. Verificar rota /sessions"
+							},
+							"response": []
+						},
+						{
+							"name": "GetAccount",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5001/users/:id_user/getAccount",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"users",
+										":id_user",
+										"getAccount"
+									],
+									"variable": [
+										{
+											"key": "id_user",
+											"value": ""
+										}
+									]
+								},
+								"description": "Endpoint para recuperar os dados de email da conta do usuário. Esse endpoint é protegido via autenticação JWT. Verificar rota /sessions"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CreateUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"user\",\r\n    \"password\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"users"
+							]
+						},
+						"description": "Endpoint para criar um usuário no sistema. Não protegido por autenticação"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
