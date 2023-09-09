@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 class Database {
     constructor(){
-        mongoose.connect('',{
+        mongoose.connect('mongodb+srv://luisfelixfilho:lfcf%401310@cluster0.hjmased.mongodb.net/dev-email-api',{
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
